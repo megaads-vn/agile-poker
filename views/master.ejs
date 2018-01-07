@@ -39,14 +39,28 @@
                 <table id="tasks" class="table table-bordered table-striped">
                   <thead>
                       <tr>
-                        <th># Tasks</th>
-                        <th>Estimated time</th>
-                        <th></th>
+                          <th># Task</th>
+                          <th ng-repeat="username in getUsernames()">{{username}}</th>
+                          <th>Summary</th>
                       </tr>
                   </thead>
                   <tbody>
+                      <tr ng-repeat="task in getTasks()">
+                          <td>Task {{$index + 1}}</td>
+                          <td ng-repeat="username in getUsernames()">{{tasks[username][$parent.$index].value}}</td>
+                          <td>
+                              <small class="label bg-yellow">avg {{getAvgEstimatedValue($index)}}</small>
+                              <small class="label bg-green">min {{getMinEstimatedValue($index)}}</small>
+                              <small class="label bg-red">max {{getMaxEstimatedValue($index)}}</small>                                                                                    
+                          </td>
+                      </tr>
                   </tbody>
                   <tfoot>
+                      <tr>
+                          <th>Total</th>
+                          <th ng-repeat="v in getTotalEstimatedValues()">{{v}}</th>
+                          <th></th>
+                      </tr>
                   </tfoot>
                 </table>
               </div>
