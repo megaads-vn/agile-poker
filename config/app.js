@@ -1,5 +1,6 @@
 module.exports = {
     port: 2307,
+    host: "localhost",
     debug: true,
     requestTimeout: -1,
     autoload: [
