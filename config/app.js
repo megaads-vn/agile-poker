@@ -1,6 +1,6 @@
 module.exports = {
-    port: 2307,
-    host: "localhost",
+    port: 8888,
+    host: "poker.megaads.vn",
     debug: true,
     requestTimeout: -1,
     autoload: [
