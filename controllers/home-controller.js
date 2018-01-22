@@ -38,6 +38,6 @@ function HomeController($config, $event, $logger, $ioConnection) {
     };
     this.fetch = function(io) {
         console.log("on fetch: ");
-        io.json("master.fetch", self.tasks);
+        io.json(self.tasks);
     };
 }
