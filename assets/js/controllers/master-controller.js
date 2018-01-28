@@ -14,7 +14,7 @@ function MasterController($scope, $http, $rootScope, io) {
         });
         io.on('master.fetch', function (data) {
             $scope.$apply(function () {
-                $scope.tasks = data.tasks;
+                $scope.tasks = data;
                 console.log("getTaskCount", $scope.getTaskCount());
                 console.log("getUserCount", $scope.getUserCount());
             });
@@ -56,10 +56,10 @@ function MasterController($scope, $http, $rootScope, io) {
         return retval;
     }
     $scope.getMaxEstimatedValue = function(taskIdx) {
-        var retval = 0.1;
+        var retval = 0;
         for (var username in $scope.tasks) {
             if ($scope.tasks[username].length - 1 >= taskIdx) {
-                if (typeof $scope.tasks[username][taskIdx].value != 'undefined' && $scope.tasks[username][taskIdx].value > retval) {
+                if (typeof $scope.tasks[username][taskIdx].value != 'undefined' && $scope.tasks[username][taskIdx].value >= retval) {
                     retval = $scope.tasks[username][taskIdx].value;
                 }
             }

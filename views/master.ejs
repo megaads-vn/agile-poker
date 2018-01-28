@@ -49,9 +49,9 @@
                           <td>Task {{$index + 1}}</td>
                           <td ng-repeat="username in getUsernames()">{{tasks[username][$parent.$index].value}}</td>
                           <td>
-                              <small class="label bg-yellow">avg {{getAvgEstimatedValue($index)}}</small>
-                              <small class="label bg-green">min {{getMinEstimatedValue($index)}}</small>
-                              <small class="label bg-red">max {{getMaxEstimatedValue($index)}}</small>                                                                                    
+                              <small class="label bg-green">avg {{getAvgEstimatedValue($index)}}</small>
+                              <small class="label bg-yellow">low {{getMinEstimatedValue($index)}}</small>
+                              <small class="label bg-red">high {{getMaxEstimatedValue($index)}}</small>
                           </td>
                       </tr>
                   </tbody>
