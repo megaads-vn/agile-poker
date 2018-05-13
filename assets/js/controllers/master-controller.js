@@ -53,7 +53,7 @@ function MasterController($scope, $http, $rootScope, io) {
         if (count > 0) {
             retval = sum / count;
         }
-        return retval;
+        return Math.round(retval * 10) / 10;
     }
     $scope.getMaxEstimatedValue = function(taskIdx) {
         var retval = 0;
