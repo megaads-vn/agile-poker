@@ -8,15 +8,11 @@ function MasterController($scope, $http, $rootScope, io) {
         io.on('team.submit', function (data) {
             $scope.$apply(function () {
                 $scope.tasks[data.username] = data.tasks;
-                console.log("getTaskCount", $scope.getTaskCount());
-                console.log("getUserCount", $scope.getUserCount());
             });
         });
         io.on('master.fetch', function (data) {
             $scope.$apply(function () {
                 $scope.tasks = data;
-                console.log("getTaskCount", $scope.getTaskCount());
-                console.log("getUserCount", $scope.getUserCount());
             });
         });
         io.emit("master.fetch", {});

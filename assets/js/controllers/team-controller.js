@@ -17,7 +17,6 @@ function TeamController($scope, $http, $rootScope, io) {
         }, 100);
     };
     $scope.submit = function() {
-        console.log("$scope.tasks", $scope.tasks);
         if ($scope.username == null || $scope.username == "") {
             var username = prompt("Please enter your name", "");
             if (username != null && username != "") {
