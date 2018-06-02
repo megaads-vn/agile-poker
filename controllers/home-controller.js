@@ -40,4 +40,5 @@ function HomeController($config, $event, $logger, $ioConnection) {
         $logger.debug("on fetch: ", tasks);
         io.json(tasks);
     };
+
 }
