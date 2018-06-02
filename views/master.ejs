@@ -27,46 +27,60 @@
     <script src="/js/angular/angular.min.js"></script>
     <script src="/js/controllers/system.js?v=<%- version %>"></script>
     <script src="/js/controllers/base-controller.js?v=<%- version %>"></script>
-    <script src="/js/controllers/master-controller.js?v=<%- version %>"></script>    
+    <script src="/js/controllers/master-controller.js?v=<%- version %>"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed" ng-app="system">
 <div class="wrapper">
-    <div class="row" ng-controller="MasterController">
+    <div class="row" ng-controller="MasterController" ng-cloak>
         <div class="col-xs-12">
             <div class="box">
-              <!-- /.box-header -->
-              <div class="box-body">
-                <table id="tasks" class="table table-bordered table-striped">
-                  <thead>
-                      <tr>
-                          <th># Task</th>
-                          <th ng-repeat="username in getUsernames()">{{username}}</th>
-                          <th>Summary</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr ng-repeat="task in getTasks()">
-                          <td>Task {{$index + 1}}</td>
-                          <td ng-repeat="username in getUsernames()">{{tasks[username][$parent.$index].value}}</td>
-                          <td>
-                              <small class="label bg-green">avg {{getAvgEstimatedValue($index)}}</small>
-                              <small class="label bg-yellow">low {{getMinEstimatedValue($index)}}</small>
-                              <small class="label bg-red">high {{getMaxEstimatedValue($index)}}</small>
-                          </td>
-                      </tr>
-                  </tbody>
-                  <tfoot>
-                      <tr>
-                          <th>Total</th>
-                          <th ng-repeat="v in getTotalEstimatedValues() track by $index">{{v}}</th>
-                          <th></th>
-                      </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <!-- /.box-body -->
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="tasks" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th># Task</th>
+                            <th ng-repeat="username in getUsernames()">{{username}}</th>
+                            <th>Summary</th>
+                            <th>Final</th>
+                        </tr>
+                        </thead>
+                        <tbody style="overflow-y: auto; max-height: 300px;">
+                        <tr ng-repeat="task in getTasks()">
+                            <td>Task {{$index + 1}}</td>
+                            <td ng-repeat="username in getUsernames()">{{tasks[username][$parent.$index].value}}</td>
+                            <td>
+                                <small class="label bg-green">avg {{getAvgEstimatedValue($index)}}</small>
+                                <small class="label bg-yellow">low {{getMinEstimatedValue($index)}}</small>
+                                <small class="label bg-red">high {{getMaxEstimatedValue($index)}}</small>
+                            </td>
+                            <td>
+                                <input type="number" ng-model="final[$index]" style="width: 50px"
+                                       ng-change="getTotalMistake()">
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Total</th>
+                            <th ng-repeat="v in getTotalEstimatedValues() track by $index">{{v}}</th>
+                            <th></th>
+                            <th>{{ getTotalFinal() }}</th>
+                        </tr>
+                        <tr>
+                            <th>Total mistake</th>
+                            <th ng-repeat="v in getTotalMistake() track by $index">{{v}}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
             </div>
         </div>
     </div>
+</div>
+
 </body>
 </html>
