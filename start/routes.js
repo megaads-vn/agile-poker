@@ -7,5 +7,6 @@ module.exports = function ($route, $logger) {
     /** Register socket.io requests **/
     $route.io("team.submit", "HomeController@submit");
     $route.io("master.fetch", "HomeController@fetch");
+    $route.io("master.final", "HomeController@final");
     /** Register filters **/
 };
