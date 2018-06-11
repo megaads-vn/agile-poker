@@ -21,6 +21,11 @@ function HomeController($config, $event, $logger, $ioConnection) {
             title: title
         }));
     };
+    this.refresh = function(io) {
+        tasks = {};
+        $ioConnection.broadcastMessage("master.fetch", tasks);
+        io.render("index");
+    };
     this.buildHttpRespondData = function(data) {
         data.host = $config.get("app.host", "localhost");
         data.port = $config.get("app.port", "2307");

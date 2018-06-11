@@ -31,50 +31,54 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed" ng-app="system">
 <div class="wrapper">
-    <div class="row" ng-controller="TeamController">
+    <div class="row" ng-controller="TeamController" ng-cloak>
         <div class="col-xs-12">
             <div class="box">
-              <!-- /.box-header -->
-              <div class="box-body">
-                <table id="tasks" class="table table-bordered table-striped">
-                  <thead>
-                      <tr>
-                        <th># Tasks</th>
-                        <th>Estimated time</th>
-                        <th></th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr ng-repeat="e in tasks">
-                        <td>Task {{$index + 1}}</td>
-                        <td>
-                          <input type="number" class="estimated-value" ng-model="e.value" my-enter="addTask()"/>
-                        </td>
-                        <td>
-                        </td>
-                      </tr>
-                  </tbody>
-                  <tfoot>
-                      <tr>
-                        <th>Total {{tasks.length}} task(s)</th>
-                        <th>Total {{calculateEstimatedTime()}} hour(s)</th>
-                        <th>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="tasks" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th># Tasks</th>
+                            <th>Estimated time</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="e in tasks">
+                            <td>Task {{$index + 1}}</td>
+                            <td>
+                                <input type="number" class="estimated-value" ng-model="e.value" my-enter="addTask()"/>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Total {{tasks.length}} task(s)</th>
+                            <th>Total {{calculateEstimatedTime()}} hour(s)</th>
+                            <th>
                             <span>
-                                <button type="button" class="btn btn-success"
-                                    ng-click="addTask()">
-                                    <i class="fa fa-plus"></i> Task
+                                <button type="button" class="btn btn-success" ng-click="addTask()">
+                                    <i class="fa fa-plus"></i>
+                                    Task
                                 </button>
-                                <button type="button" class="btn btn-danger"
-                                    ng-click="submit(false)">
-                                    <i class="fa fa-check"></i> Submit
+                                <button type="button" class="btn btn-danger" ng-click="removeTask()">
+                                    <i class="fa fa-minus"></i>
+                                    Remove
+                                </button>
+                                <button type="button" class="btn btn-info" ng-click="submit(false)">
+                                    <i class="fa fa-check"></i>
+                                    Submit
                                 </button>
                             </span>
-                        </th>
-                      </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <!-- /.box-body -->
+                            </th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
             </div>
         </div>
     </div>

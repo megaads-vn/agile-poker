@@ -13,10 +13,12 @@ function MasterController($scope, $http, $rootScope, io) {
         io.on('master.fetch', function (data) {
             $scope.$apply(function () {
                 $scope.tasks = data;
+                $scope.final = [];
             });
         });
         io.emit("master.fetch", {});
     };
+    $scope.final = [];
     $scope.getTaskCount = function() {
         var retval = 0;
         for (var username in $scope.tasks) {
@@ -88,6 +90,32 @@ function MasterController($scope, $http, $rootScope, io) {
         }
         return retval;
     };
+
+    $scope.getTotalMistake = function() {
+        var retval = [];
+        var idx = 0;
+        for (var username in $scope.tasks) {
+            var sum = 0;
+            for (var i = 0; i < $scope.tasks[username].length; i++) {
+                if (typeof $scope.tasks[username][i].value != 'undefined' && typeof $scope.final[i] != 'undefined' && $scope.final[i] != null) {
+                    sum += Math.abs($scope.tasks[username][i].value - $scope.final[i]);
+                }
+            }
+            retval[idx] = sum;
+            idx ++;
+        }
+        return retval;
+    };
+
+    $scope.getTotalFinal = function() {
+        var retval = 0;
+        angular.forEach($scope.final, function(value, key) {
+            retval += value;
+        });
+
+        return retval;
+    };
+
     $scope.getUserCount = function() {
         var retval = 0;
         for (var username in $scope.tasks) {

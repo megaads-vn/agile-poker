@@ -16,6 +16,11 @@ function TeamController($scope, $http, $rootScope, io) {
             $(".estimated-value").last().select();
         }, 100);
     };
+    $scope.removeTask = function() {
+        if ($scope.tasks.length > 1) {
+            $scope.tasks.splice(-1,1);
+        }
+    };
     $scope.submit = function() {
         if ($scope.username == null || $scope.username == "") {
             var username = prompt("Please enter your name", "");
