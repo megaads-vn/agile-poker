@@ -58,11 +58,11 @@
                         <tbody style="overflow-y: auto; max-height: 300px;">
                         <tr ng-repeat="task in getTasks()">
                             <td>Task {{$index + 1}}</td>
-                            <td ng-repeat="username in getUsernames()">{{tasks[username][$parent.$index].value}} - 
-                                <span class="label bg-green" ng-show="checkMinOffset(username, $parent.$index)">{{getOffset(tasks[username][$parent.$index].value , final[$parent.$index])}}</span>
-                                <span class="label bg-red" ng-show="checkMaxOffset(username, $parent.$index)">{{getOffset(tasks[username][$parent.$index].value , final[$parent.$index])}}</span>
+                            <td ng-repeat="username in getUsernames()">
+                                <span class="label bg-green" ng-show="checkMinOffset(username, $parent.$index)">{{tasks[username][$parent.$index].value}}</span>
+                                <span class="label bg-red" ng-show="checkMaxOffset(username, $parent.$index)">{{tasks[username][$parent.$index].value}}</span>
 
-                                <span class="label bg-yellow" ng-show="!checkMaxOffset(username, $parent.$index)&&!checkMinOffset(username, $parent.$index)">{{getOffset(tasks[username][$parent.$index].value , final[$parent.$index])}}</span>
+                                <span class="" ng-show="!checkMaxOffset(username, $parent.$index)&&!checkMinOffset(username, $parent.$index)">{{tasks[username][$parent.$index].value}}</span>
                                <!--  <span class="label bg-red" ng-if="checkMaxOffset($index, $parent.$index)">{{getOffset(tasks[username][$parent.$index].value , final[$parent.$index])}}</span>
                                 <span ng-if="(!checkMaxOffset($index, $parent.$index)&&!checkMaxOffset($index, $parent.$index))">{{getOffset(tasks[username][$parent.$index].value , final[$parent.$index])}}</span> -->
                                 
