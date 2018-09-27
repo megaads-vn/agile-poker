@@ -16,7 +16,13 @@ function MasterController($scope, $http, $rootScope, io) {
                 $scope.final = [];
             });
         });
+        io.on('master.final', function (data) {
+            $scope.$apply(function () {
+                $scope.final = data;
+            });
+        });
         io.emit("master.fetch", {});
+        io.emit("master.final", []);
     };
     $scope.final = [];
     $scope.getTaskCount = function() {
@@ -107,12 +113,16 @@ function MasterController($scope, $http, $rootScope, io) {
         return retval;
     };
 
+    $scope.sendFinal = function(){
+        io.emit('master.final', $scope.final);
+    }
+
     $scope.getTotalFinal = function() {
+       
         var retval = 0;
         angular.forEach($scope.final, function(value, key) {
             retval += value;
         });
-
         return retval;
     };
 
@@ -130,5 +140,40 @@ function MasterController($scope, $http, $rootScope, io) {
         }
         return retval;
     };
+
+    $scope.getOffset = function(a, b){
+        var retval = "";
+        if(a != null){
+            retval = Math.abs(parseFloat(a) - parseFloat(b));
+        }
+        return retval;
+    }
+    $scope.checkMaxOffset = function(username, index){
+        var final = $scope.final[index] || -1;
+        if(final == -1){
+            return false;
+        }
+        var max = $scope.getOffset($scope.tasks[username][index].value, final);
+        console.log('max', index, max);
+        for (var usernameTmp in $scope.tasks) {
+            if($scope.getOffset(typeof $scope.tasks[usernameTmp][index] != "undefined" && $scope.tasks[usernameTmp][index].value , final)> max){
+                return false;
+            }
+        }
+        return true;
+    }
+    $scope.checkMinOffset = function(username, index){
+        var final = $scope.final[index] || -1;
+        if(final == -1){
+            return false;
+        }
+        var min = $scope.getOffset($scope.tasks[username][index].value, final);
+        for (var usernameTmp in $scope.tasks) {
+            if(typeof $scope.tasks[usernameTmp][index] != "undefined"&& $scope.getOffset($scope.tasks[usernameTmp][index].value ,  final)< min){
+                return false;
+            }
+        }
+        return true;
+    }
     this.init();
 }
