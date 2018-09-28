@@ -44,15 +44,31 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr ng-repeat="e in tasks">
-                            <td>Task {{$index + 1}}</td>
-                            <td>
-                                <input type="number" class="estimated-value" ng-model="e.value" my-enter="addTask()"/>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
+                        <tbody ng-repeat="e in tasks">
+                            <tr>
+                                <td>Task {{$index + 1}}</td>
+                                <td>
+                                    <input type="number" class="estimated-value" ng-model="e.value" my-enter="addTask()"/>
+                                    <button type="button" class="btn btn-warning btn-sm" ng-click="addChildTask(e)" style="margin-left: 20px">
+                                        <i class="fa fa-plus"></i>
+                                        Task
+                                    </button>
+                                    <button type="button" ng-show="e.childs.length" class="btn btn-default btn-sm" ng-click="removeChildTask(e)">
+                                        <i class="fa fa-minus"></i>
+                                        Delete
+                                    </button>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr ng-repeat="child in e.childs">
+                                <td>|__ Task {{($parent.$index + 1)  + '.' + ($index + 1)}}</td>
+                                <td>
+                                    <input type="number" class="estimated-value" ng-model="child.value" my-enter="addChildTask(e)" ng-change="changeChildValue(e)" style="margin-left: 30px; width: 145px;"/>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
                         </tbody>
                         <tfoot>
                         <tr>

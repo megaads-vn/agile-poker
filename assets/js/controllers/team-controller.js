@@ -9,7 +9,8 @@ function TeamController($scope, $http, $rootScope, io) {
     };
     $scope.addTask = function() {
         $scope.tasks.push({
-            value: 0
+            value: 0,
+            childs: []
         });
         setTimeout(function() {
             $(".estimated-value").last().focus();
@@ -41,7 +42,28 @@ function TeamController($scope, $http, $rootScope, io) {
             }
         }
         return retval;
-    }
+    };
+
+    $scope.addChildTask = function (task) {
+        task.childs.push({
+            value: 0
+        });
+    };
+
+    $scope.removeChildTask = function (task) {
+        task.childs.splice(-1,1);
+    };
+
+    $scope.changeChildValue = function (task) {
+        var totalValue = 0;
+        task.childs.forEach(function(child) {
+            if (child.value != null) {
+                totalValue += child.value;
+            }
+        });
+        task.value = totalValue;
+    };
+
     this.emitData = function() {
         io.emit("team.submit", {
             username: $scope.username,

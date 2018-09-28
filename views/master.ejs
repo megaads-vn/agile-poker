@@ -55,9 +55,9 @@
                             <th>Final</th>
                         </tr>
                         </thead>
-                        <tbody style="overflow-y: auto; max-height: 300px;">
-                        <tr ng-repeat="task in getTasks()">
-                            <td>Task {{$index + 1}}</td>
+                        <tbody style="overflow-y: auto; max-height: 300px;" ng-repeat="task in getTasks()">
+                        <tr>
+                            <td><b>Task {{$index + 1}}</b></td>
                             <td ng-repeat="username in getUsernames()">
                                 <span class="label bg-green" ng-show="checkMinOffset(username, $parent.$index)">{{tasks[username][$parent.$index].value}}</span>
                                 <span class="label bg-red" ng-show="checkMaxOffset(username, $parent.$index)">{{tasks[username][$parent.$index].value}}</span>
@@ -75,6 +75,24 @@
                             <td>
                                 <input type="number" ng-model="final[$index]" style="width: 50px"
                                        ng-change="getTotalMistake()" ng-keyup="sendFinal()">
+                            </td>
+                        </tr>
+                        <tr ng-repeat="child in getChilds($index)">
+                            <td>|__ Task {{($parent.$index + 1) + '.' + ($index + 1)}}</td>
+                            <td ng-repeat="username in getUsernames()">
+                                <span class="label bg-green" ng-show="checkMinOffset(username, $parent.$parent.$index, child - 1)">{{tasks[username][$parent.$parent.$index].childs[$parent.$index].value}}</span>
+                                <span class="label bg-red" ng-show="checkMaxOffset(username, $parent.$parent.$index, child - 1)">{{tasks[username][$parent.$parent.$index].childs[$parent.$index].value}}</span>
+                                <span class="" ng-show="!checkMaxOffset(username, $parent.$parent.$index, child - 1)&&!checkMinOffset(username, $parent.$parent.$index, child - 1)">{{tasks[username][$parent.$parent.$index].childs[$parent.$index].value}}</span>
+
+                            </td>
+                            <td>
+                                <small class="label bg-green">avg {{getAvgEstimatedValue($parent.$index, child - 1)}}</small>
+                                <small class="label bg-yellow">low {{getMinEstimatedValue($parent.$index, child - 1)}}</small>
+                                <small class="label bg-red">high {{getMaxEstimatedValue($parent.$index, child - 1)}}</small>
+                            </td>
+                            <td>
+                                <input type="number" ng-model="final[$parent.$index + '-' + $index]" style="width: 50px"
+                                       ng-change="getTotalMistake();rebuildFinal($parent.$index, getChilds($parent.$index))" ng-keyup="sendFinal()">
                             </td>
                         </tr>
                         </tbody>

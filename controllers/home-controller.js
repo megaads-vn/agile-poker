@@ -5,7 +5,7 @@ var packageCfg = require(__dir + "/package.json");
 function HomeController($config, $event, $logger, $ioConnection) {
     var self = this;
     var tasks = {};
-    var final = [];
+    var final = {};
     this.index = function(io) {
         var title = "Agile Poker";
         io.render("index");
@@ -24,7 +24,7 @@ function HomeController($config, $event, $logger, $ioConnection) {
     };
     this.refresh = function(io) {
         tasks = {};
-        final = [];
+        final = {};
         $ioConnection.broadcastMessage("master.fetch", tasks);
         $ioConnection.broadcastMessage("master.final", final);
         io.render("index");
@@ -49,9 +49,10 @@ function HomeController($config, $event, $logger, $ioConnection) {
         io.json(tasks);
     };
     this.final = function(io) {
-        final = io.inputs.length>0 ? io.inputs : final;
+        if ( io.inputs.length != 0) {
+            final = io.inputs;
+        }
         $logger.debug("on final: ", final);
         $ioConnection.broadcastMessage("master.final", final);
-        
     };
 }
