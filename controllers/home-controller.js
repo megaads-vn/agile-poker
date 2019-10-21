@@ -55,4 +55,8 @@ function HomeController($config, $event, $logger, $ioConnection) {
         $logger.debug("on final: ", final);
         $ioConnection.broadcastMessage("master.final", final);
     };
+
+    this.getData = function (io) {
+        io.json(final);
+    }
 }
