@@ -51,6 +51,9 @@ function IO(constructorProperties) {
         var self = this;
         this.header("Content-Type", "application/json");
         this.header("Connection", "close");
+        this.header('Access-Control-Allow-Origin', '*');
+        this.header('Access-Control-Allow-Methods', '*');
+        this.header('Access-Control-Allow-Headers', '*');
         this.build();
         this.p.tos.forEach(function (session) {
             if (session.socket != null) {
