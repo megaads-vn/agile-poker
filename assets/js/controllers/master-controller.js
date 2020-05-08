@@ -23,6 +23,19 @@ function MasterController($scope, $http, $rootScope, io) {
         });
         io.emit("master.fetch", {});
         io.emit("master.final", []);
+
+        io.on('master.update.task', function (data) {
+            try {
+                $scope.$apply(function () {
+                    $scope.tasks[data.username][data.index] = data.task;
+                });
+                
+            } catch (error) {
+                console.error('Error on update task!');
+            }
+           
+        });
+        
     };
     $scope.final = {};
     $scope.getTaskCount = function() {
@@ -74,7 +87,7 @@ function MasterController($scope, $http, $rootScope, io) {
         if (typeof indexChild == 'undefined') {
             for (var username in $scope.tasks) {
                 if ($scope.tasks[username].length - 1 >= taskIdx) {
-                    if (typeof $scope.tasks[username][taskIdx].value != 'undefined') {
+                    if (typeof $scope.tasks[username][taskIdx].value != 'undefined' && !$scope.tasks[username][taskIdx].isDisable) {
                         sum += $scope.tasks[username][taskIdx].value;
                         count ++;
                     }
@@ -87,7 +100,7 @@ function MasterController($scope, $http, $rootScope, io) {
         } else {
             for (var username in $scope.tasks) {
                 if ($scope.tasks[username].length - 1 >= taskIdx && $scope.tasks[username][taskIdx].childs.length - 1 >= indexChild) {
-                    if (typeof $scope.tasks[username][taskIdx].childs[indexChild].value != 'undefined') {
+                    if (typeof $scope.tasks[username][taskIdx].childs[indexChild].value != 'undefined' && !$scope.tasks[username][taskIdx].childs[indexChild].isDisable) {
                         sum += $scope.tasks[username][taskIdx].childs[indexChild].value;
                         count ++;
                     }
@@ -105,7 +118,7 @@ function MasterController($scope, $http, $rootScope, io) {
         if (typeof indexChild == 'undefined') {
             for (var username in $scope.tasks) {
                 if ($scope.tasks[username].length - 1 >= taskIdx) {
-                    if (typeof $scope.tasks[username][taskIdx].value != 'undefined' && $scope.tasks[username][taskIdx].value >= retval) {
+                    if (typeof $scope.tasks[username][taskIdx].value != 'undefined' && $scope.tasks[username][taskIdx].value >= retval && !$scope.tasks[username][taskIdx].isDisable) {
                         retval = $scope.tasks[username][taskIdx].value;
                     }
                 }
@@ -113,7 +126,7 @@ function MasterController($scope, $http, $rootScope, io) {
         } else {
             for (var username in $scope.tasks) {
                 if ($scope.tasks[username].length - 1 >= taskIdx && $scope.tasks[username][taskIdx].childs.length - 1 >= indexChild) {
-                    if (typeof $scope.tasks[username][taskIdx].childs[indexChild].value != 'undefined' && $scope.tasks[username][taskIdx].childs[indexChild].value >= retval) {
+                    if (typeof $scope.tasks[username][taskIdx].childs[indexChild].value != 'undefined' && $scope.tasks[username][taskIdx].childs[indexChild].value >= retval && !$scope.tasks[username][taskIdx].childs[indexChild].isDisable) {
                         retval = $scope.tasks[username][taskIdx].childs[indexChild].value;
                     }
                 }
@@ -128,7 +141,7 @@ function MasterController($scope, $http, $rootScope, io) {
         if (typeof indexChild == 'undefined') {
             for (var username in $scope.tasks) {
                 if ($scope.tasks[username].length - 1 >= taskIdx) {
-                    if (typeof $scope.tasks[username][taskIdx].value != 'undefined' && $scope.tasks[username][taskIdx].value < retval) {
+                    if (typeof $scope.tasks[username][taskIdx].value != 'undefined' && $scope.tasks[username][taskIdx].value < retval && !$scope.tasks[username][taskIdx].isDisable) {
                         retval = $scope.tasks[username][taskIdx].value;
                     }
                 }
@@ -136,12 +149,15 @@ function MasterController($scope, $http, $rootScope, io) {
         } else {
             for (var username in $scope.tasks) {
                 if ($scope.tasks[username].length - 1 >= taskIdx && $scope.tasks[username][taskIdx].childs.length - 1 >= indexChild) {
-                    if (typeof $scope.tasks[username][taskIdx].childs[indexChild].value != 'undefined' && $scope.tasks[username][taskIdx].childs[indexChild].value < retval) {
+                    if (typeof $scope.tasks[username][taskIdx].childs[indexChild].value != 'undefined' && $scope.tasks[username][taskIdx].childs[indexChild].value < retval && !$scope.tasks[username][taskIdx].childs[indexChild].isDisable) {
                         retval = $scope.tasks[username][taskIdx].childs[indexChild].value;
                     }
                 }
             }
         }
+
+        if(retval == 100000)
+            retval = 0;
 
         return retval;
     }
@@ -192,6 +208,11 @@ function MasterController($scope, $http, $rootScope, io) {
     $scope.sendFinal = function(){
         io.emit('master.final', $scope.final);
     }
+
+    $scope.updateTask = function(data){
+        io.emit('master.update', data);
+    }
+
     $scope.getTotalFinal = function() {
        
         var retval = 0;
@@ -296,5 +317,87 @@ function MasterController($scope, $http, $rootScope, io) {
         }
         $scope.final[index] = sumFinal;
     };
+
+    $scope.toogleIgnore = function(username, index) {
+        $scope.tasks[username][index].isDisable = !$scope.tasks[username][index].isDisable;
+        $scope.updateTask({
+            username, 
+            index, 
+            task: $scope.tasks[username][index]
+        });
+    }
+
+    $scope.toogleIgnoreChild = function(username, grandparentIndex, parentIndex) {
+        $scope.tasks[username][grandparentIndex].childs[parentIndex].isDisable = !$scope.tasks[username][grandparentIndex].childs[parentIndex].isDisable;
+        $scope.updateTask({
+            username, 
+            index: grandparentIndex, 
+            task: $scope.tasks[username][grandparentIndex]
+        });
+    }
+
+    $scope.checkAmazingTaskChild = function(grandparentIndex, parentIndex) {
+        let users = $scope.getUsernames();
+        let frequencyEstimated = {};
+        let estimatedValue = [];
+
+        users.forEach(function(username) {
+            let rowTask = $scope.tasks[username][grandparentIndex].childs[parentIndex];
+            if(typeof rowTask != 'undefined' && rowTask) {
+                if(!frequencyEstimated[rowTask.value]){
+                    frequencyEstimated[rowTask.value] = 0;
+                }
+                frequencyEstimated[rowTask.value] ++; 
+                estimatedValue.push(rowTask.value)
+            }
+
+            estimatedValue.push(rowTask)
+        })
+
+        let countFrequencyEstimated = 0;
+        for (let k in frequencyEstimated) {
+            if (frequencyEstimated.hasOwnProperty(k)) {
+               ++ countFrequencyEstimated;
+            }
+        }
+
+        if(countFrequencyEstimated <= 2) {
+            return true
+        }
+
+        return false;
+
+    }
+
+    $scope.checkAmazingTask = function(index) {
+        let users = $scope.getUsernames();
+        let frequencyEstimated = {};
+        let estimatedValue = [];
+        users.forEach(function(username) {
+            let rowTask = $scope.tasks[username][index];
+            if(typeof rowTask != 'undefined' && rowTask) {
+                if(!frequencyEstimated[rowTask.value]){
+                    frequencyEstimated[rowTask.value] = 0;
+                }
+                frequencyEstimated[rowTask.value] ++; 
+                estimatedValue.push(rowTask.value)
+            }
+        })
+
+        let countFrequencyEstimated = 0;
+        for (let k in frequencyEstimated) {
+            if (frequencyEstimated.hasOwnProperty(k)) {
+               ++ countFrequencyEstimated;
+            }
+        }
+
+        if(countFrequencyEstimated <= 2) {
+            return true
+        }
+
+        return false;
+
+    }
+
     this.init();
 }

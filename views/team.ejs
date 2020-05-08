@@ -48,7 +48,7 @@
                             <tr>
                                 <td>Task {{$index + 1}}</td>
                                 <td>
-                                    <input type="number" class="estimated-value" ng-model="e.value" my-enter="addTask()"/>
+                                    <input type="number" class="estimated-value" ng-model="e.value" my-enter="addTask()" my-tab />
                                     <button type="button" class="btn btn-warning btn-sm" ng-click="addChildTask(e)" style="margin-left: 20px">
                                         <i class="fa fa-plus"></i>
                                         Task
@@ -64,7 +64,7 @@
                             <tr ng-repeat="child in e.childs">
                                 <td>|__ Task {{($parent.$index + 1)  + '.' + ($index + 1)}}</td>
                                 <td>
-                                    <input type="number" class="estimated-value" ng-model="child.value" my-enter="addChildTask(e)" ng-change="changeChildValue(e)" style="margin-left: 30px; width: 145px;"/>
+                                    <input type="number" class="estimated-value" ng-model="child.value" my-enter="addChildTask(e)" my-tab="e" ng-change="changeChildValue(e)" style="margin-left: 30px; width: 145px;"/>
                                 </td>
                                 <td>
                                 </td>

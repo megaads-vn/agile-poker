@@ -1,11 +1,42 @@
 system.controller("TeamController", TeamController);
-function TeamController($scope, $http, $rootScope, io) {
+function TeamController($scope, $http, $rootScope, io, $timeout) {
     $scope.tasks = [];
     $scope.username = "";
     var self = this;
     this.__proto__ = new BaseController($scope, $http, $rootScope);
     this.init = function() {
         $scope.addTask();
+
+        /* ----------------- */
+
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+            const keyCode = event.code;
+            const which = event.which;
+
+            /* if(document.activeElement.tagName == 'INPUT')
+                return; */
+            
+            switch (which) {
+                case 187: //'Equal'
+                    $timeout(function () {
+                        $scope.addTask();
+                    })
+                    break;
+
+                case 189: //'Minus'
+                    $timeout(function () {
+                        $scope.removeTask();
+                    })
+                    break;
+
+                default:
+                    break;
+            }
+
+            // console.log(`Key pressed ${keyName} / ${keyCode}`, event);
+        }, false);
+
     };
     $scope.addTask = function() {
         $scope.tasks.push({
@@ -47,6 +78,11 @@ function TeamController($scope, $http, $rootScope, io) {
     $scope.addChildTask = function (task) {
         task.childs.push({
             value: 0
+        });
+
+        $timeout(function() {
+            $(".estimated-value").last().focus();
+            $(".estimated-value").last().select();
         });
     };
 

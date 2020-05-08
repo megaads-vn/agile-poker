@@ -56,6 +56,21 @@ function HomeController($config, $event, $logger, $ioConnection) {
         $ioConnection.broadcastMessage("master.final", final);
     };
 
+    this.update = function(io) {
+        let data;
+        if (io.inputs.length != 0) {
+            data = io.inputs;
+        }
+
+        try {
+            tasks[data.username][data.index] = data.task;
+        } catch (error) {
+            $logger.debug("errr on update: ", error);
+        }
+
+        $ioConnection.broadcastMessage("master.update.task", data);
+    }
+
     this.getData = function (io) {
         io.json(final);
     }

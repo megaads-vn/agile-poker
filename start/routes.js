@@ -9,5 +9,6 @@ module.exports = function ($route, $logger) {
     $route.io("team.submit", "HomeController@submit");
     $route.io("master.fetch", "HomeController@fetch");
     $route.io("master.final", "HomeController@final");
+    $route.io("master.update", "HomeController@update");
     /** Register filters **/
 };
