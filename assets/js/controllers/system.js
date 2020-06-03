@@ -32,18 +32,20 @@ system.directive('myEnter', function ($timeout) {
 system.directive('myTab', function ($timeout) {
     return function (scope, element, attrs) {
         element.bind("keydown keypress", function (event) {
-            if (event.which === 9) {
+            if (event.which === 32) {
                 if (event.shiftKey) {
                     $timeout(function () {
                         scope.$apply(function () {
-                            scope.removeChildTask(scope.e)
+                            if(typeof element[0] != 'undefined' && element[0].dataset.parentId)
+                                scope.removeChildTask(scope.e, element[0].dataset.parentId);
                         });
                     })
 
-                } else {
+                } else { 
                     $timeout(function () {
                         scope.$apply(function () {
-                            scope.addChildTask(scope.e);
+                            if(typeof element[0] != 'undefined' && element[0].dataset.parentId)
+                                scope.addChildTask(scope.e, element[0].dataset.parentId);
                         });
                     });
                 }

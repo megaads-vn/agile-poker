@@ -48,12 +48,12 @@
                             <tr>
                                 <td>Task {{$index + 1}}</td>
                                 <td>
-                                    <input type="number" class="estimated-value" ng-model="e.value" my-enter="addTask()" my-tab />
-                                    <button type="button" class="btn btn-warning btn-sm" ng-click="addChildTask(e)" style="margin-left: 20px">
+                                    <input type="number" id="task_{{ $index + 1 }}" data-parent-id="{{ $index + 1 }}" class="estimated-value" ng-model="e.value" my-enter="addTask()" my-tab />
+                                    <button type="button" class="btn btn-warning btn-sm" ng-click="addChildTask(e, $index + 1)" style="margin-left: 20px">
                                         <i class="fa fa-plus"></i>
                                         Task
                                     </button>
-                                    <button type="button" ng-show="e.childs.length" class="btn btn-default btn-sm" ng-click="removeChildTask(e)">
+                                    <button type="button" ng-show="e.childs.length" class="btn btn-default btn-sm" ng-click="removeChildTask(e, $index + 1)">
                                         <i class="fa fa-minus"></i>
                                         Delete
                                     </button>
@@ -64,7 +64,7 @@
                             <tr ng-repeat="child in e.childs">
                                 <td>|__ Task {{($parent.$index + 1)  + '.' + ($index + 1)}}</td>
                                 <td>
-                                    <input type="number" class="estimated-value" ng-model="child.value" my-enter="addChildTask(e)" my-tab="e" ng-change="changeChildValue(e)" style="margin-left: 30px; width: 145px;"/>
+                                    <input id="task_{{ $parent.$index + 1 }}_{{ $index + 1 }}" data-parent-id="{{ $parent.$index + 1 }}" type="number" class="estimated-value" ng-model="child.value" my-enter="addChildTask(e, $parent.$index + 1)" my-tab ng-change="changeChildValue(e)" style="margin-left: 30px; width: 145px;"/>
                                 </td>
                                 <td>
                                 </td>

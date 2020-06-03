@@ -4,7 +4,7 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
     $scope.username = "";
     var self = this;
     this.__proto__ = new BaseController($scope, $http, $rootScope);
-    this.init = function() {
+    this.init = function () {
         $scope.addTask();
 
         /* ----------------- */
@@ -16,7 +16,7 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
 
             /* if(document.activeElement.tagName == 'INPUT')
                 return; */
-            
+
             switch (which) {
                 case 187: //'Equal'
                     $timeout(function () {
@@ -38,22 +38,22 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
         }, false);
 
     };
-    $scope.addTask = function() {
+    $scope.addTask = function () {
         $scope.tasks.push({
             value: 0,
             childs: []
         });
-        setTimeout(function() {
+        setTimeout(function () {
             $(".estimated-value").last().focus();
             $(".estimated-value").last().select();
         }, 100);
     };
-    $scope.removeTask = function() {
+    $scope.removeTask = function () {
         if ($scope.tasks.length > 1) {
-            $scope.tasks.splice(-1,1);
+            $scope.tasks.splice(-1, 1);
         }
     };
-    $scope.submit = function() {
+    $scope.submit = function () {
         if ($scope.username == null || $scope.username == "") {
             var username = prompt("Please enter your name", "");
             if (username != null && username != "") {
@@ -65,7 +65,7 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
             alert("Thank " + $scope.username + " for your submitting");
         }
     };
-    $scope.calculateEstimatedTime = function() {
+    $scope.calculateEstimatedTime = function () {
         var retval = 0;
         for (var i = 0; i < $scope.tasks.length; i++) {
             if (typeof $scope.tasks[i].value !== 'undefined' && $scope.tasks[i].value != null) {
@@ -75,24 +75,41 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
         return retval;
     };
 
-    $scope.addChildTask = function (task) {
+    $scope.addChildTask = function (task, index) {
         task.childs.push({
             value: 0
         });
 
-        $timeout(function() {
-            $(".estimated-value").last().focus();
-            $(".estimated-value").last().select();
+        $timeout(function () {
+
+            let lastInput = $(".estimated-value").filter(function () {
+                return $(this).data("parentId") == index;
+            }).last();
+
+            lastInput.focus();
+            lastInput.select();
+
         });
     };
 
-    $scope.removeChildTask = function (task) {
-        task.childs.splice(-1,1);
+    $scope.removeChildTask = function (task, index) {
+        task.childs.splice(-1, 1);
+
+        $timeout(function () {
+
+            let lastInput = $(".estimated-value").filter(function () {
+                return $(this).data("parentId") == index;
+            }).last();
+
+            lastInput.focus();
+            lastInput.select();
+
+        });
     };
 
     $scope.changeChildValue = function (task) {
         var totalValue = 0;
-        task.childs.forEach(function(child) {
+        task.childs.forEach(function (child) {
             if (child.value != null) {
                 totalValue += child.value;
             }
@@ -100,7 +117,7 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
         task.value = totalValue;
     };
 
-    this.emitData = function() {
+    this.emitData = function () {
         io.emit("team.submit", {
             username: $scope.username,
             tasks: $scope.tasks
