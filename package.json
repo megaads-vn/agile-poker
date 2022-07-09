@@ -29,6 +29,8 @@
         "ejs": "2.*",
         "jquery": "^3.2.1",
         "lru-cache": "*",
+        "nodemon": "^2.0.19",
+        "request": "^2.88.2",
         "socket.io": "1.*"
     }
 }

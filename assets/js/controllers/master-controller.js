@@ -1,10 +1,12 @@
 system.controller("MasterController", MasterController);
 function MasterController($scope, $http, $rootScope, io) {
     $scope.tasks = {};
+    $scope.tickets = [];
     $scope.username = "";
     var self = this;
     this.__proto__ = new BaseController($scope, $http, $rootScope);
     this.init = function() {
+        $scope.fetchTickets();
         io.on('team.submit', function (data) {
             $scope.$apply(function () {
                 $scope.tasks[data.username] = data.tasks;
@@ -42,18 +44,17 @@ function MasterController($scope, $http, $rootScope, io) {
         var retval = 0;
         for (var username in $scope.tasks) {
             if (retval < $scope.tasks[username].length) {
-                retval = $scope.tasks[username].length;
+                retval = $scope.tasks[username];
             }
         }
         return retval;
     };
     $scope.getTasks = function() {
         var retval = [];
-        var taskCount = $scope.getTaskCount();
-        for (var i = 1; i <= taskCount; i++) {
-
-            retval.push(i);
-        }
+        var retval = $scope.getTaskCount();
+        // for (var i = 1; i <= taskCount; i++) {
+        //     retval.push(i);
+        // }
 
         return retval;
     };
@@ -64,10 +65,11 @@ function MasterController($scope, $http, $rootScope, io) {
         for (var username in $scope.tasks) {
             for (var task in $scope.tasks[username]) {
                 if (typeof listChild[task] == 'undefined') {
-                    listChild[task] = 0;
+                    listChild[task] = [];
                 }
-                if (listChild[task] < $scope.tasks[username][task].childs.length){
-                    listChild[task] = $scope.tasks[username][task].childs.length;
+                if (listChild[task] < $scope.tasks[username][task].childs.length) {
+                    listChild[task] = $scope.tasks[username][task].childs;
+                    console.log('listChild[task]: ', listChild[task]);
                 }
             }
         }
@@ -397,6 +399,51 @@ function MasterController($scope, $http, $rootScope, io) {
 
         return false;
 
+    }
+
+    $scope.goTicket = function (ticketId) {
+        return `${ticketSite}/ticket?id=${ticketId}`;
+    }
+
+    $scope.setEstimateHours = function(ticketId, estimateHours) {
+        $http.patch(`${ticketApi}/poker_ticket/${ticketId}`, {estimate_time: $scope.final[estimateHours]})
+            .then(res => {
+                console.log('set estimate time: ', res.data);
+            })
+    }
+
+    $scope.setChecklistEstimateHours = function(listId, parentIndex, index) {
+        const estimateTime = $scope.final[`${parentIndex}-${index}`];
+        $http.patch(`${ticketApi}/poker_ticket_list/${listId}`, {estimate_time: estimateTime})
+            .then(res => {
+                console.log('res.data: ', res.data);
+            })
+    }
+
+    $scope.fetchTickets = function () {
+        console.log('fetchTicket: ');
+        $http.get(`${ticketApi}/poker_ticket`, {
+            params: {
+                fields: 'id,name,project_id', 
+                filters: 'status=waiting,project_id=20',
+                embeds: 'childs',
+                page_size: -1
+            }})
+            .then(res => {
+                const data = res.data; 
+                if (data.status === 'successful') {
+                    $scope.tickets = data.result;
+                }
+            })
+    }
+
+    $scope.getTicketChilds = function (ticketId) {
+        var findTicket = $scope.tickets.filter(i => i.id === ticketId);
+        var retval = [];
+        if (findTicket[0] && findTicket[0].childs) {
+            retval = findTicket[0].childs;
+        }
+        return retval;
     }
 
     this.init();

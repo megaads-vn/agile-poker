@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/dist/css/AdminLTE.min.css">
     <link rel="stylesheet" href="/dist/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="/dist/css/pnotify.custom.min.css">
+    <link rel="stylesheet" href="/style/team.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -21,6 +22,8 @@
     <script>
         var host = '<%- host %>';
         var port = <%- port %>;
+        var ticketApi = 'https://ticket.megaads.test/api';
+        var ticketSite = 'https://ticket.megaads.test';
     </script>
     <script src="/js/socket-io/socket.io-1.7.4.min.js"></script>
     <script src="/js/jquery/jquery.min.js"></script>
@@ -46,7 +49,7 @@
                         </thead>
                         <tbody ng-repeat="e in tasks">
                             <tr>
-                                <td>Task {{$index + 1}}</td>
+                                <td><a class="ticket-title" href="{{ goTicket(e.id) }}" target="_blank">#{{$index + 1}} {{ e.name }}</a></td>
                                 <td>
                                     <input type="number" id="task_{{ $index + 1 }}" data-parent-id="{{ $index + 1 }}" class="estimated-value" ng-model="e.value" my-enter="addTask()" my-tab />
                                     <button type="button" class="btn btn-warning btn-sm" ng-click="addChildTask(e, $index + 1)" style="margin-left: 20px">
@@ -62,7 +65,7 @@
                                 </td>
                             </tr>
                             <tr ng-repeat="child in e.childs">
-                                <td>|__ Task {{($parent.$index + 1)  + '.' + ($index + 1)}}</td>
+                                <td>|__<strong>{{($parent.$index + 1)  + '.' + ($index + 1)}}:</strong> {{ child.name }}</td>
                                 <td>
                                     <input id="task_{{ $parent.$index + 1 }}_{{ $index + 1 }}" data-parent-id="{{ $parent.$index + 1 }}" type="number" class="estimated-value" ng-model="child.value" my-enter="addChildTask(e, $parent.$index + 1)" my-tab ng-change="changeChildValue(e)" style="margin-left: 30px; width: 145px;"/>
                                 </td>

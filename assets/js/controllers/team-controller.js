@@ -6,6 +6,7 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
     this.__proto__ = new BaseController($scope, $http, $rootScope);
     this.init = function () {
         $scope.addTask();
+        $scope.fetchTickets();
 
         /* ----------------- */
 
@@ -116,6 +117,25 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
         });
         task.value = totalValue;
     };
+
+    $scope.fetchTickets = function () {
+        $http.get(`${ticketApi}/poker_ticket`, {
+            params: {
+                fields: 'id,name,project_id', 
+                filters: 'status=waiting,project_id=20',
+                embeds: 'childs',
+                page_size: -1
+            }})
+            .then(res => {
+                const data = res.data; 
+                if (data.status === 'successful') {
+                    $scope.tasks = data.result;
+                }
+            })
+    }
+    $scope.goTicket = function (ticketId) {
+        return `${ticketSite}/ticket?id=${ticketId}`;
+    }
 
     this.emitData = function () {
         io.emit("team.submit", {

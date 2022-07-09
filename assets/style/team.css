@@ -1,0 +1,7 @@
+.ticket-title {
+    color: #000;
+}
+.ticket-title:hover {
+    color: #000;
+    text-decoration: underline;
+}

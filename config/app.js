@@ -20,5 +20,6 @@ module.exports = {
             key: "/path/file.key",
             cert: "/path/file.crt"
         }
-    }
+    },
+    ticketApi: 'http://ticket.megaads.test/api/'
 };

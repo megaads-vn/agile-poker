@@ -10,7 +10,7 @@ function HomeController($config, $event, $logger, $ioConnection) {
         var title = "Agile Poker";
         io.render("index");
     };
-    this.team = function(io) {
+    this.team = async function(io) {
         var title = "Team | Agile Poker";
         io.render("team", self.buildHttpRespondData({
             title: title
@@ -73,5 +73,9 @@ function HomeController($config, $event, $logger, $ioConnection) {
 
     this.getData = function (io) {
         io.json(final);
+    }
+
+    this.fetchTicket = function () {
+
     }
 }
