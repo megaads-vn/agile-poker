@@ -2,9 +2,19 @@ system.controller("TeamController", TeamController);
 function TeamController($scope, $http, $rootScope, io, $timeout) {
     $scope.tasks = [];
     $scope.username = "";
+    $scope.projectIds = '20';
     var self = this;
     this.__proto__ = new BaseController($scope, $http, $rootScope);
     this.init = function () {
+        let splitUrl = window.location.href.split(/[?#]/);
+        if (splitUrl.length > 1) {
+            const params = splitUrl[1];
+            if (params.includes('projects')) {
+                let projectIds = params.match(/projects=[(\d+);?]+/);
+                $scope.projectIds = projectIds[0].replace('projects=', '');
+                
+            }
+        }
         $scope.addTask();
         $scope.fetchTickets();
 
@@ -119,13 +129,15 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
     };
 
     $scope.fetchTickets = function () {
+        let getFilters = {
+            fields: 'id,name,project_id', 
+            filters: `status=waiting,project_id={${$scope.projectIds}}`,
+            embeds: 'childs',
+            page_size: -1
+        }
+
         $http.get(`${ticketApi}/poker_ticket`, {
-            params: {
-                fields: 'id,name,project_id', 
-                filters: 'status=waiting,project_id=20',
-                embeds: 'childs',
-                page_size: -1
-            }})
+            params: getFilters})
             .then(res => {
                 const data = res.data; 
                 if (data.status === 'successful') {
@@ -134,7 +146,7 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
             })
     }
     $scope.goTicket = function (ticketId) {
-        return `${ticketSite}/ticket?id=${ticketId}`;
+        return `${ticketSite}/ticket/${ticketId}`;
     }
 
     this.emitData = function () {

@@ -402,7 +402,7 @@ function MasterController($scope, $http, $rootScope, io) {
     }
 
     $scope.goTicket = function (ticketId) {
-        return `${ticketSite}/ticket?id=${ticketId}`;
+        return `${ticketSite}/ticket/${ticketId}`;
     }
 
     $scope.setEstimateHours = function(ticketId, estimateHours) {
