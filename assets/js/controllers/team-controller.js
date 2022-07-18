@@ -11,8 +11,9 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
             const params = splitUrl[1];
             if (params.includes('projects')) {
                 let projectIds = params.match(/projects=[(\d+);?]+/);
-                $scope.projectIds = projectIds[0].replace('projects=', '');
-                
+                if (projectIds) {
+                    $scope.projectIds = projectIds[0].replace('projects=', '');
+                }
             }
         }
         $scope.addTask();
@@ -152,7 +153,8 @@ function TeamController($scope, $http, $rootScope, io, $timeout) {
     this.emitData = function () {
         io.emit("team.submit", {
             username: $scope.username,
-            tasks: $scope.tasks
+            tasks: $scope.tasks,
+            projects: $scope.projectIds
         });
     }
     this.init();

@@ -7,8 +7,10 @@ function HomeController($config, $event, $logger, $ioConnection) {
     var tasks = {};
     var final = {};
     this.index = function(io) {
-        var title = "Agile Poker";
-        io.render("index");
+        var title = "Home | Agile Poker";
+        io.render("index", self.buildHttpRespondData({
+            title: title
+        }));
     };
     this.team = async function(io) {
         var title = "Team | Agile Poker";
@@ -32,6 +34,8 @@ function HomeController($config, $event, $logger, $ioConnection) {
     this.buildHttpRespondData = function(data) {
         data.host = $config.get("app.host", "localhost");
         data.port = $config.get("app.port", "2307");
+        data.ticket_api = $config.get('app.ticketApi', 'https://ticket.megaaads.vn/api/');
+        data.ticket_site = $config.get('app.ticketSite', 'https://ticket.megaaads.vn/')
         data.version = packageCfg.version;
         return data;
     };
@@ -39,7 +43,8 @@ function HomeController($config, $event, $logger, $ioConnection) {
         $logger.debug("on submit: ", io.inputs);
         var task = {
             username: io.inputs.username,
-            tasks: io.inputs.tasks
+            tasks: io.inputs.tasks,
+            projects: io.inputs.projects
         };
         tasks[io.inputs.username] = io.inputs.tasks;
         $ioConnection.broadcastMessage("team.submit", task);
@@ -73,9 +78,5 @@ function HomeController($config, $event, $logger, $ioConnection) {
 
     this.getData = function (io) {
         io.json(final);
-    }
-
-    this.fetchTicket = function () {
-
     }
 }

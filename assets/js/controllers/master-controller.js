@@ -3,13 +3,15 @@ function MasterController($scope, $http, $rootScope, io) {
     $scope.tasks = {};
     $scope.tickets = [];
     $scope.username = "";
+    $scope.projectIds = '20';
     var self = this;
     this.__proto__ = new BaseController($scope, $http, $rootScope);
     this.init = function() {
-        $scope.fetchTickets();
         io.on('team.submit', function (data) {
             $scope.$apply(function () {
                 $scope.tasks[data.username] = data.tasks;
+                $scope.projectIds = data.projects;
+                $scope.fetchTickets();
             });
         });
         io.on('master.fetch', function (data) {
@@ -425,7 +427,7 @@ function MasterController($scope, $http, $rootScope, io) {
         $http.get(`${ticketApi}/poker_ticket`, {
             params: {
                 fields: 'id,name,project_id', 
-                filters: 'status=waiting,project_id=20',
+                filters: `status=waiting,project_id={${$scope.projectIds}}`,
                 embeds: 'childs',
                 page_size: -1
             }})

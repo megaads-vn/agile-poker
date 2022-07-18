@@ -21,5 +21,6 @@ module.exports = {
             cert: "/path/file.crt"
         }
     },
-    ticketApi: 'http://ticket.megaads.test/api/'
+    ticketApi: 'https://ticket.megaads.vn/api',
+    ticketSite: 'https://ticket.megaads.vn/'
 };
