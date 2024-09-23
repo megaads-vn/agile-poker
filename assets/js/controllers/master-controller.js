@@ -3,6 +3,7 @@ function MasterController($scope, $http, $rootScope, io) {
     $scope.tasks = {};
     $scope.username = "";
     var self = this;
+    $scope.showAutoFill = false;
     this.__proto__ = new BaseController($scope, $http, $rootScope);
     this.init = function() {
         io.on('team.submit', function (data) {
@@ -40,6 +41,11 @@ function MasterController($scope, $http, $rootScope, io) {
     $scope.final = {};
     $scope.getTaskCount = function() {
         var retval = 0;
+        const userObj = Object.keys($scope.tasks);
+        $scope.showAutoFill = false;
+        if (userObj.length == 1) {
+            $scope.showAutoFill = true;
+        }
         for (var username in $scope.tasks) {
             if (retval < $scope.tasks[username].length) {
                 retval = $scope.tasks[username].length;
@@ -397,6 +403,24 @@ function MasterController($scope, $http, $rootScope, io) {
 
         return false;
 
+    }
+
+    $scope.autoFill = function() {
+        console.log('Auto Fill Clicked');
+        const objKeys = Object.keys($scope.tasks);
+        let tasks = $scope.tasks[objKeys[0]];
+        for (const idx in tasks) {
+            if (tasks[idx].childs.length <= 0) {
+                $scope.final[idx] = tasks[idx].value;
+            } else {
+                let parentTotal = 0;
+                for (const childIdx in tasks[idx].childs) {
+                    parentTotal += tasks[idx].childs[childIdx].value;
+                    $scope.final[idx + '-' + childIdx] = tasks[idx].childs[childIdx].value;
+                }
+                $scope.final[idx] = parentTotal;
+            }
+        }
     }
 
     this.init();

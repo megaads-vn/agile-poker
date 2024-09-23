@@ -8,7 +8,12 @@ function HomeController($config, $event, $logger, $ioConnection) {
     var final = {};
     this.index = function(io) {
         var title = "Agile Poker";
-        io.render("index");
+        const showClearSession = io.inputs.token && io.inputs.token == 'Devzone@1234' ? true : false;
+        const responseHttpData = self.buildHttpRespondData({
+            title: title,
+            showClearSession: showClearSession
+        });
+        io.render("index", responseHttpData);
     };
     this.team = function(io) {
         var title = "Team | Agile Poker";
@@ -27,7 +32,7 @@ function HomeController($config, $event, $logger, $ioConnection) {
         final = {};
         $ioConnection.broadcastMessage("master.fetch", tasks);
         $ioConnection.broadcastMessage("master.final", final);
-        io.render("index");
+        io.redirect("/");
     };
     this.buildHttpRespondData = function(data) {
         data.host = $config.get("app.host", "localhost");

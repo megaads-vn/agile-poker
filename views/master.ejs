@@ -116,7 +116,7 @@
                             <th>Total mistake</th>
                             <th ng-repeat="v in getTotalMistake() track by $index">{{v}}</th>
                             <th></th>
-                            <th></th>
+                            <th><button class="btn btn-sm btn-success" ng-click="autoFill();" ng-show="showAutoFill">Auto Fill</button></th>
                         </tr>
                         </tfoot>
                     </table>
