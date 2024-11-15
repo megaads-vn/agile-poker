@@ -1,6 +1,10 @@
 var system = angular.module("system", []);
 system.factory('io', function ($rootScope) {
-    var socket = io("http://" + host + ":" + port);
+    var fullUrl = `//${host}`;
+    if (typeof port != 'undefined' && port != '') {
+        fullUrl += `:${port}`;
+    }
+    var socket = io(fullUrl);
     return socket;
 });
 system.directive('myEnter', function ($timeout) {
